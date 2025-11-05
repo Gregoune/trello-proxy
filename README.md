@@ -15,19 +15,29 @@ Un proxy Flask simple pour l'API Trello qui permet de créer des cartes et récu
 Retourne le statut du service.
 
 ### `POST /trello`
-Crée une nouvelle carte Trello.
+Crée une nouvelle carte Trello avec assignation optionnelle de membres.
 
 **Body JSON requis :**
 ```json
 {
   "idList": "id_de_la_liste_trello",
   "name": "Titre de la carte",
-  "desc": "Description optionnelle"
+  "desc": "Description optionnelle",
+  "idMembers": ["member_id1", "member_id2"]
 }
 ```
 
+**Paramètres :**
+- `idList` (requis) : ID de la liste Trello
+- `name` (requis) : Titre de la carte
+- `desc` (optionnel) : Description de la carte
+- `idMembers` (optionnel) : Liste des IDs de membres à assigner (peut être un seul ID ou un tableau)
+
 ### `GET /lists/<board_id>`
 Récupère toutes les listes d'un board Trello.
+
+### `GET /members/<board_id>`
+Récupère tous les membres d'un board Trello avec leurs IDs pour l'assignation.
 
 ## Configuration
 
@@ -71,11 +81,19 @@ vercel --prod
 ## Exemple d'utilisation
 
 ```bash
-# Créer une carte
+# Créer une carte simple
 curl -X POST https://votre-app.render.com/trello \
   -H "Content-Type: application/json" \
   -d '{"idList": "abc123", "name": "Ma tâche", "desc": "Description"}'
 
-# Lister les boards
+# Créer une carte avec assignation de membre
+curl -X POST https://votre-app.render.com/trello \
+  -H "Content-Type: application/json" \
+  -d '{"idList": "abc123", "name": "Tâche assignée", "desc": "Description", "idMembers": ["member_id"]}'
+
+# Lister les listes d'un board
 curl https://votre-app.render.com/lists/board_id
+
+# Lister les membres d'un board
+curl https://votre-app.render.com/members/board_id
 ```
